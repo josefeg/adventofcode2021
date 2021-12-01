@@ -17,15 +17,13 @@ class Day1Test {
         263
                                   )
 
-    private val d = Day1()
-
     @Test
     fun `countIncrements returns the correct result`() {
-        assertEquals(7, this.d.countIncrements(this.input))
+        assertEquals(7, countIncrements(this.input))
     }
 
     @Test
     fun `countThreeMeasurementsSlidingIncrements returns the correct result`() {
-        assertEquals(5, this.d.countThreeMeasurementsSlidingIncrements(this.input))
+        assertEquals(5, countThreeMeasurementsSlidingIncrements(this.input))
     }
 }

@@ -11,7 +11,6 @@ fun countThreeMeasurementsSlidingIncrements(measurements: List<Int>): Int {
     return measurements.foldIndexed(0) { index, acc, _ -> if (index < 3) 0 else if (sumWindow(index) > sumWindow(index - 1)) acc + 1 else acc }
 }
 
-
 fun main() {
     val measurements = File("src/main/resources/day1.txt")
         .readLines()
@@ -20,4 +19,3 @@ fun main() {
     println(countIncrements(measurements))
     println(countThreeMeasurementsSlidingIncrements(measurements))
 }
-

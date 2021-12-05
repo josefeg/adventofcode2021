@@ -41,6 +41,29 @@ data class Line(val source: Point, val target: Point) {
     }
 }
 
+data class Grid(val spaces: List<List<Int>>) {
+    fun mark(p: Point): Grid {
+        val markedSpaces = this.spaces.mapIndexed { index, row ->
+            if (index != p.x) row else this.incrementElementAt(row, p.y)
+        }
+        return Grid(markedSpaces)
+    }
+
+    private fun incrementElementAt(l: List<Int>, index: Int): List<Int> {
+        return when (index) {
+            0 -> listOf(l.first() + 1) + l.subList(1, l.size)
+            (l.size - 1) -> l.subList(0, index) + listOf(l[index] + 1)
+            else -> l.subList(0, index) + listOf(l[index] + 1) + l.subList(index + 1, l.size)
+        }
+    }
+
+    fun countOverlappingPoints(): Int {
+        return this.spaces.fold(0) { acc, row ->
+            row.fold(acc) { internalAcc, point -> internalAcc + (if (point > 1) 1 else 0) }
+        }
+    }
+}
+
 fun parseInput(input: List<String>): List<Line> = input.map { Line.fromString(it) }
 
 fun findGridSize(lines: List<Line>): Pair<Int, Int> {
@@ -51,27 +74,19 @@ fun findGridSize(lines: List<Line>): Pair<Int, Int> {
 
 fun countOverlappingPoints(lines: List<Line>): Int {
     val (x, y) = findGridSize(lines)
-    val grid = MutableList(x + 1) { MutableList(y + 1) { 0 } }
-
-    lines.filter { it.isHorizontal() || it.isVertical() }
+    val grid = lines.filter { it.isHorizontal() || it.isVertical() }
         .flatMap { it.toPoints() }
-        .forEach { grid[it.x][it.y] += 1 }
+        .fold(Grid(List(x + 1) { List(y + 1) { 0 } })) { acc, point -> acc.mark(point) }
 
-    return grid.fold(0) { acc, row ->
-        row.fold(acc) { internalAcc, point -> internalAcc + (if (point > 1) 1 else 0) }
-    }
+    return grid.countOverlappingPoints()
 }
 
 fun countOverlappingPointsWithDiagonals(lines: List<Line>): Int {
     val (x, y) = findGridSize(lines)
-    val grid = MutableList(x + 1) { MutableList(y + 1) { 0 } }
+    val grid = lines.flatMap { it.toPoints() }
+        .fold(Grid(List(x + 1) { List(y + 1) { 0 } })) { acc, point -> acc.mark(point) }
 
-    lines.flatMap { it.toPoints() }
-        .forEach { grid[it.x][it.y] += 1 }
-
-    return grid.fold(0) { acc, row ->
-        row.fold(acc) { internalAcc, point -> internalAcc + (if (point > 1) 1 else 0) }
-    }
+    return grid.countOverlappingPoints()
 }
 
 fun main() {
@@ -79,6 +94,6 @@ fun main() {
         .readLines()
 
     val lines = parseInput(input)
-    // println(countOverlappingPoints(lines)) // 4655
-    // println(countOverlappingPointsWithDiagonals(lines)) // 20500
+    println(countOverlappingPoints(lines))
+    println(countOverlappingPointsWithDiagonals(lines)) 
 }

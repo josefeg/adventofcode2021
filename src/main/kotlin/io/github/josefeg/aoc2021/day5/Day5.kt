@@ -95,5 +95,5 @@ fun main() {
 
     val lines = parseInput(input)
     println(countOverlappingPoints(lines))
-    println(countOverlappingPointsWithDiagonals(lines)) 
+    println(countOverlappingPointsWithDiagonals(lines))
 }

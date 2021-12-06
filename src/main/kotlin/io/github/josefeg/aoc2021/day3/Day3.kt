@@ -18,10 +18,11 @@ fun calculateLifeSupportRating(readings: List<String>): Int {
         val threshold = input.size / 2.0
         val mostCommonBit = if (input.fold(0) { acc, value -> acc + (if (value[index] == '1') 1 else 0) } >= threshold) '1' else '0'
         val haveMostCommonBit = input.filter { cmp(it[index], mostCommonBit) }
-        if (haveMostCommonBit.size == 1) {
-            return haveMostCommonBit[0]
+        return if (haveMostCommonBit.size == 1) {
+            haveMostCommonBit[0]
+        } else {
+            calculateLifeSupportRating(index + 1, cmp, haveMostCommonBit)
         }
-        return calculateLifeSupportRating(index + 1, cmp, haveMostCommonBit)
     }
 
     val o2 = binaryToDecimal(calculateLifeSupportRating(0, { c1, c2 -> c1 == c2 }, readings))
